@@ -10,3 +10,8 @@ dependencies = [
     "transformers",
     "sentence-transformers",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.22",
+]

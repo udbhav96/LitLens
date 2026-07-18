@@ -9,3 +9,8 @@ dependencies = [
     "sqlalchemy",
     "celery",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.22",
+]

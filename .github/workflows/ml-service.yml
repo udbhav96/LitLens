@@ -1,0 +1,43 @@
+name: ml-service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/ml-service/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/ml-service.yml"
+  pull_request:
+    paths:
+      - "apps/ml-service/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/ml-service.yml"
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      # torch/transformers installs are slow — this is the workflow that
+      # benefits most from uv's cache, hence enable-cache above
+      - name: Install dependencies (ml-service package only)
+        run: uv sync --package ml-service --frozen
+
+      - name: Lint (ruff check)
+        run: uv run --package ml-service ruff check .
+
+      - name: Format check (ruff format)
+        run: uv run --package ml-service ruff format --check .
+
+     # - name: Test
+      #  run: uv run --package ml-service pytest
